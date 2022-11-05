@@ -74,6 +74,31 @@ class BooksController {
         .json({ status: false, message: error.message });
     }
   }
+
+  async getAllBook(req, res) {
+    try {
+      if (books.length === 0) {
+        return res.status(200).json({
+          status: false,
+          message: 'Tidak Ada Buku',
+          data: {
+            books: [],
+          },
+        });
+      }
+      return res.status(200).json({
+        status: true,
+        message: 'Semua buku berhasil didapatkan',
+        data: {
+          books,
+        },
+      });
+    } catch (error) {
+      return res
+        .status(error.code || 500)
+        .json({ status: false, message: error.message });
+    }
+  }
 }
 
 export default new BooksController();
