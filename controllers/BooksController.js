@@ -99,6 +99,28 @@ class BooksController {
         .json({ status: false, message: error.message });
     }
   }
+
+  async getBookByIdHandler(req, res) {
+    try {
+      const { bookId } = req.params;
+
+      const book = books.filter((b) => b.id === bookId)[0];
+      if (!book) {
+        throw { code: 404, message: 'Buku tidak ditemukan' };
+      }
+
+      return res.status(200).json({
+        status: true,
+        data: {
+          book,
+        },
+      });
+    } catch (error) {
+      return res
+        .status(error.code || 500)
+        .json({ status: false, message: error.message });
+    }
+  }
 }
 
 export default new BooksController();
