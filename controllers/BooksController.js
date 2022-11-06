@@ -90,7 +90,11 @@ class BooksController {
         status: true,
         message: 'Semua buku berhasil didapatkan',
         data: {
-          books,
+          books: books.map((book) => ({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
         },
       });
     } catch (error) {
