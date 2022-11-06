@@ -191,6 +191,32 @@ class BooksController {
         .json({ status: false, message: error.message });
     }
   }
+
+  async deleteBookByIdHandler(req, res) {
+    try {
+      const { bookId } = req.params;
+
+      const index = books.findIndex((book) => book.id === bookId);
+
+      if (index === -1) {
+        throw {
+          code: 400,
+          message: 'Buku gagal dihapus. bookId tidak ditemukan',
+        };
+      }
+
+      books.splice(index, 1);
+
+      return res.status(200).json({
+        status: true,
+        message: 'Buku berhasil dihapus',
+      });
+    } catch (error) {
+      return res
+        .status(error.code || 500)
+        .json({ status: false, message: error.message });
+    }
+  }
 }
 
 export default new BooksController();
