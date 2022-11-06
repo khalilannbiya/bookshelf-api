@@ -77,6 +77,28 @@ class BooksController {
 
   async getAllBook(req, res) {
     try {
+      const { name, reading, finished } = req.query;
+
+      let filteredBooks = books;
+
+      if (name) {
+        filteredBooks = filteredBooks.filter((book) =>
+          book.name.toLowerCase().includes(name.toLowerCase())
+        );
+      }
+
+      if (reading) {
+        filteredBooks = filteredBooks.filter(
+          (book) => book.reading === !!Number(reading)
+        );
+      }
+
+      if (finished) {
+        filteredBooks = filteredBooks.filter(
+          (book) => book.finished === !!Number(finished)
+        );
+      }
+
       if (books.length === 0) {
         return res.status(200).json({
           status: false,
@@ -90,7 +112,7 @@ class BooksController {
         status: true,
         message: 'Semua buku berhasil didapatkan',
         data: {
-          books: books.map((book) => ({
+          books: filteredBooks.map((book) => ({
             id: book.id,
             name: book.name,
             publisher: book.publisher,
