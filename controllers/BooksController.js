@@ -121,6 +121,76 @@ class BooksController {
         .json({ status: false, message: error.message });
     }
   }
+
+  async editBookByIdHandler(req, res) {
+    try {
+      const { bookId } = req.params;
+      const {
+        name,
+        year,
+        author,
+        summary,
+        publisher,
+        pageCount,
+        readPage,
+        reading,
+      } = req.body;
+
+      const updatedAt = new Date().toISOString();
+      const index = books.findIndex((book) => book.id === bookId);
+
+      // Jika bookId tidak ada
+      if (index === -1) {
+        throw {
+          code: 400,
+          message: 'Gagal memperbarui buku. bookId tidak ditemukan',
+        };
+      }
+
+      if (!name) {
+        throw {
+          code: 400,
+          message: 'Gagal edit buku. Mohon isi nama buku',
+        };
+      }
+
+      if (pageCount < readPage) {
+        throw {
+          code: 400,
+          message:
+            'Gagal edit buku. readPage tidak boleh lebih besar dari pageCount',
+        };
+      }
+
+      const finished = pageCount === readPage;
+
+      books[index] = {
+        ...books[index],
+        name,
+        year,
+        author,
+        summary,
+        publisher,
+        pageCount,
+        readPage,
+        finished,
+        reading,
+        updatedAt,
+      };
+
+      return res.status(200).json({
+        status: true,
+        message: 'Buku berhasil diperbarui',
+        data: {
+          bookId,
+        },
+      });
+    } catch (error) {
+      return res
+        .status(error.code || 500)
+        .json({ status: false, message: error.message });
+    }
+  }
 }
 
 export default new BooksController();
